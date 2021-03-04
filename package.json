@@ -1,0 +1,22 @@
+{
+  "name": "lab3-mainserver",
+  "version": "1.0.0",
+  "description": "Middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sistemas-distribuidos-st/Lab3-MainServer.git"
+  },
+  "keywords": [
+    "Middleware"
+  ],
+  "author": "ST",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sistemas-distribuidos-st/Lab3-MainServer/issues"
+  },
+  "homepage": "https://github.com/sistemas-distribuidos-st/Lab3-MainServer#readme"
+}
