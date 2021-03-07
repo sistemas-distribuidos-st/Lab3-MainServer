@@ -18,5 +18,12 @@
   "bugs": {
     "url": "https://github.com/sistemas-distribuidos-st/Lab3-MainServer/issues"
   },
-  "homepage": "https://github.com/sistemas-distribuidos-st/Lab3-MainServer#readme"
+  "homepage": "https://github.com/sistemas-distribuidos-st/Lab3-MainServer#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.19"
+  }
 }
