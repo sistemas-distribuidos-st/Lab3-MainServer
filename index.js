@@ -1,12 +1,14 @@
-const express = require('express')
+const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
 
-mongoose.connect('mongodb://localhost/tasklist', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://mongo:27017/tasklist', {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 
+app.use(cors());
 app.use(express.json())
 app.post('/tasks', (req, res)=>{
     let task = new Task(req.body)
