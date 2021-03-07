@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
 const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
+const backupURL = "http://192.168.0.26:8101/backup";
 
-mongoose.connect('mongodb://mongo:27017/tasklist', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/tasklist', {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 
 app.use(cors());
@@ -26,9 +28,29 @@ app.get('/tasks', (req, res)=>{
     })
 })
 
+//get pedir monitoreo
+
+setInterval(async ()=>{
+    let taskList = { tasks:[] };
+    await Task.find((err, tasks) => {
+        taskList.tasks = tasks;
+    })
+    
+    axios.post(backupURL, taskList)
+    .then(data => console.log(data.data))
+}, 10000)
+
 app.listen(port, ()=>{
     console.log(`Servidor encendido en localhost:${port}`)
 })
 
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', ()=>console.log("DB conectado"));
+db.once('open', ()=>{
+    console.log("DB conectado")
+    axios.get(backupURL)
+    .then(data=>{
+        //data 
+         //ALIMENTAR
+    })
+   
+});
