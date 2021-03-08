@@ -5,52 +5,59 @@ const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
-const backupURL = "http://192.168.0.26:8101/backup";
+const backupURL = "http://192.168.1.7:8102/backup";
 
-mongoose.connect('mongodb://localhost:27017/tasklist', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 app.use(cors());
 app.use(express.json())
-app.post('/tasks', (req, res)=>{
+app.post('/tasks', (req, res) => {
     let task = new Task(req.body)
     task.save()
-    .then(resp=> res.send({ok:true}))
-    .catch(err=>res.send({ok:false, error:{message:'Hubo un error en la DB', dbMessage: err.message}}))
+        .then(resp => res.send({ ok: true }))
+        .catch(err => res.send({ ok: false, error: { message: 'Hubo un error en la DB', dbMessage: err.message } }))
 })
 
-app.get('/tasks', (req, res)=>{
-    Task.find((err, tasks)=>{
-        if(err)
-            res.send({ok:false, error:{message:'Hubo un error en la DB', dbMessage: err.message}})
+app.get('/tasks', (req, res) => {
+    Task.find((err, tasks) => {
+        if (err)
+            res.send({ ok: false, error: { message: 'Hubo un error en la DB', dbMessage: err.message } })
         else
-            res.send({ok:true, tasks})
+            res.send({ ok: true, tasks })
     })
 })
 
 //get pedir monitoreo
+app.get('/monitor', (req, res) => {
+    let d = new Date()
+    res.send({ time: d, ok: true })
+})
 
-setInterval(async ()=>{
-    let taskList = { tasks:[] };
+setInterval(async() => {
+    let taskList = { tasks: [] };
     await Task.find((err, tasks) => {
         taskList.tasks = tasks;
     })
-    
+
     axios.post(backupURL, taskList)
-    .then(data => console.log(data.data))
+        .then(data => console.log(data.data))
 }, 10000)
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`Servidor encendido en localhost:${port}`)
 })
 
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', ()=>{
+db.once('open', () => {
     console.log("DB conectado")
     axios.get(backupURL)
-    .then(data=>{
-        //data 
-         //ALIMENTAR
-    })
-   
+        .then(data => {
+            //data 
+            //ALIMENTAR
+            data.data.data.task.forEach(element => {
+                let task = new Task(element)
+                task.save()
+            })
+        })
 });
