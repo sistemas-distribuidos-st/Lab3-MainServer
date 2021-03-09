@@ -9,7 +9,7 @@ const port = 8100;
 const backupURL = "http://192.168.1.7:8101/backup";
 
 axios.post('http://192.168.0.26:3000/server', getIPs())
-.then(res => console.log(res))
+.then(res => console.log(res.data))
 .catch(err => console.log(err.message))
 
 mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -47,10 +47,10 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log("DB conectado")
     axios.get(backupURL)
-        .then(data => {
+        .then(res => {
             //data 
             //ALIMENTAR
-            console.log(data)
+            console.log(res.data)
             /*data.data.data.task.forEach(element => {
                 let task = new Task(element)
                 task.save()
@@ -64,7 +64,7 @@ db.once('open', () => {
         })
 
         axios.post(backupURL, taskList)
-            .then(data => console.log(data.data))
+            .then(res => console.log(res.data))
             .catch(err => console.error(err.message))
     }, 10000)
 });
