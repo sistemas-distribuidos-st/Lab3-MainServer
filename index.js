@@ -7,7 +7,7 @@ const app = express();
 const port = 8100;
 const backupURL = "http://192.168.1.7:8102/backup";
 
-mongoose.connect('mongodb://localhost:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 app.use(cors());
@@ -34,16 +34,6 @@ app.get('/monitor', (req, res) => {
     res.send({ time: d, ok: true })
 })
 
-setInterval(async() => {
-    let taskList = { tasks: [] };
-    await Task.find((err, tasks) => {
-        taskList.tasks = tasks;
-    })
-
-    axios.post(backupURL, taskList)
-        .then(data => console.log(data.data))
-}, 10000)
-
 app.listen(port, () => {
     console.log(`Servidor encendido en localhost:${port}`)
 })
@@ -60,4 +50,14 @@ db.once('open', () => {
                 task.save()
             })
         })
+    
+    setInterval(async() => {
+        let taskList = { tasks: [] };
+        await Task.find((err, tasks) => {
+            taskList.tasks = tasks;
+        })
+
+        axios.post(backupURL, taskList)
+            .then(data => console.log(data.data))
+    }, 10000)
 });
