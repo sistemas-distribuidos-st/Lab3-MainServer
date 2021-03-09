@@ -2,10 +2,13 @@ FROM node:alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+RUN apk update && \
+    apk add --update git
+
+RUN git clone https://github.com/sistemas-distribuidos-st/Lab3-MainServer
+
+WORKDIR /usr/src/app/Lab3-MainServer
 
 RUN npm install
-
-COPY . .
 
 CMD [ "node", "index.js" ]
