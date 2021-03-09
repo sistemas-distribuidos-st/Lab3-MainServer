@@ -7,7 +7,7 @@ const app = express();
 const port = 8100;
 const backupURL = "http://192.168.1.7:8102/backup";
 
-mongoose.connect('mongodb://localhost:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 app.use(cors());
