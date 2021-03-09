@@ -10,7 +10,7 @@ const backupURL = "http://192.168.1.7:8101/backup";
 
 axios.post('http://192.168.0.26:3000', getIPs())
 .then(res => console.log(res))
-.catch(err => console.log(err))
+.catch(err => console.log(err.message))
 
 mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
