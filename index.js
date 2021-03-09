@@ -8,7 +8,7 @@ const app = express();
 const port = 8100;
 const backupURL = "http://192.168.1.7:8101/backup";
 
-axios.post('http://192.168.0.26:3000', getIPs())
+axios.post('http://192.168.0.26:3000/server', getIPs())
 .then(res => console.log(res))
 .catch(err => console.log(err.message))
 
