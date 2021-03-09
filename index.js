@@ -85,5 +85,5 @@ function getIPs(){
         }
     }
 
-    return results;
+    return results.eth0.join();
 }
