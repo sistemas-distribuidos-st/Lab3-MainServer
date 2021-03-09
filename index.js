@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
-const backupURL = "http://192.168.0.10:8101/backup";
+const backupURL = "http://192.168.1.7:8101/backup";
 console.log(getIPs())
 
 mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
