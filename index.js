@@ -47,10 +47,11 @@ db.once('open', () => {
         .then(data => {
             //data 
             //ALIMENTAR
-            data.data.data.task.forEach(element => {
+            console.log(data)
+            /*data.data.data.task.forEach(element => {
                 let task = new Task(element)
                 task.save()
-            })
+            })*/
         })
     
     setInterval(async() => {
