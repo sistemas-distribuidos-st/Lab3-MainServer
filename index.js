@@ -1,13 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const { networkInterfaces } = require('os');
 const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
-const backupURL = "http://192.168.1.7:8102/backup";
+const backupURL = "http://192.168.0.10:8101/backup";
+console.log(getIPs())
 
-mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 app.use(cors());
@@ -59,5 +61,25 @@ db.once('open', () => {
 
         axios.post(backupURL, taskList)
             .then(data => console.log(data.data))
+            .catch(err => console.error(err.message))
     }, 10000)
 });
+
+function getIPs(){
+    const nets = networkInterfaces();
+    const results = {}
+
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]) {
+            if (net.family === 'IPv4' && !net.internal) {
+                if (!results[name]) {
+                    results[name] = [];
+                }
+                
+                results[name].push(net.address);
+            }
+        }
+    }
+
+    return results;
+}
