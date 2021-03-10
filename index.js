@@ -6,11 +6,14 @@ const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
-const backupURL = "http://192.168.1.7:8101/backup";
+const backupURL = "http://192.168.0.26:8101/backup";
 
 axios.post('http://192.168.0.26:3000/server', getIPs())
-.then(res => console.log(res.data))
-.catch(err => console.log(err.message))
+.then(res => {
+    if(res.data.ok)
+        console.log(new Date(), `Servidor registrado con éxito | IP: ${res.data.serverURL}`)
+})
+.catch(err => console.log(new Date(), err.message))
 
 mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
@@ -45,16 +48,16 @@ app.listen(port, () => {
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-    console.log("DB conectado")
+    console.log(new Date(), "Conectado a MongoDB")
     axios.get(backupURL)
         .then(res => {
-            //data 
-            //ALIMENTAR
-            console.log(res.data)
-            /*data.data.data.task.forEach(element => {
-                let task = new Task(element)
-                task.save()
-            })*/
+            if(res.data.ok){
+                console.log(new Date(), `Backup solicitado con exito`)
+                res.data.data.tasks.forEach(task => {
+                    new Task(task).save();
+                })
+            }else
+                console.log(new Date(), `Fallo en solicitud de backup`)
         })
     
     setInterval(async() => {
@@ -64,8 +67,8 @@ db.once('open', () => {
         })
 
         axios.post(backupURL, taskList)
-            .then(res => console.log(res.data))
-            .catch(err => console.error(err.message))
+            .then(res => console.log(new Date(), `Registro guardado | Backup: ${res.name}`))
+            .catch(err => console.error(new Date(), err.message))
     }, 10000)
 });
 

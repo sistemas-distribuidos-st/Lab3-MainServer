@@ -8,13 +8,12 @@ services:
             - "8100:8100"
         links:
             - mongo
-        network_mode: bridge
-
+        networks:
+            driver: bridge
     mongo:
         container_name: l3-mongo
         image: mongo
         ports:
             - "27017:27017"
-        logging:
-            driver: none
-        network_mode: bridge
+        D
+river: bridge
