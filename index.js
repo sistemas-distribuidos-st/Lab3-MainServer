@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const { Task } = require('./models')
 const app = express();
 const port = 8100;
-const backupURL = "http://192.168.1.7:8101/backup";
+const backupURL = "http://192.168.0.26:8101/backup";
 
 axios.post('http://192.168.0.26:3000/server', getIPs())
 .then(res => console.log(res.data))
