@@ -9,8 +9,11 @@ const port = 8100;
 const backupURL = "http://192.168.0.26:8101/backup";
 
 axios.post('http://192.168.0.26:3000/server', getIPs())
-.then(res => console.log(res.data))
-.catch(err => console.log(err.message))
+.then(res => {
+    if(res.data.ok)
+        console.log(new Date(), `Servidor registrado con éxito | IP: ${res.data.serverURL}`)
+})
+.catch(err => console.log(new Date(), err.message))
 
 mongoose.connect('mongodb://mongo:27017/tasklist', { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
@@ -18,10 +21,9 @@ const db = mongoose.connection;
 app.use(cors());
 app.use(express.json())
 app.post('/tasks', (req, res) => {
-    let task = new Task(req.body)
-    task.save()
-        .then(resp => res.send({ ok: true }))
-        .catch(err => res.send({ ok: false, error: { message: 'Hubo un error en la DB', dbMessage: err.message } }))
+    new Task(req.body).save()
+    .then(resp => res.send({ ok: true }))
+    .catch(err => res.send({ ok: false, error: { message: 'Hubo un error en la DB', dbMessage: err.message } }))
 })
 
 app.get('/tasks', (req, res) => {
@@ -45,16 +47,16 @@ app.listen(port, () => {
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-    console.log("DB conectado")
+    console.log(new Date(), "Conectado a MongoDB")
     axios.get(backupURL)
         .then(res => {
-            //data 
-            //ALIMENTAR
-            console.log(res.data)
-            /*data.data.data.task.forEach(element => {
-                let task = new Task(element)
-                task.save()
-            })*/
+            if(res.data.ok){
+                console.log(new Date(), `Backup solicitado con exito`)
+                res.data.data.tasks.forEach(task => {
+                    new Task(task).save();
+                })
+            }else
+                console.log(new Date(), `Fallo en solicitud de backup`)
         })
     
     setInterval(async() => {
@@ -64,8 +66,8 @@ db.once('open', () => {
         })
 
         axios.post(backupURL, taskList)
-            .then(res => console.log(res.data))
-            .catch(err => console.error(err.message))
+        .then(res => console.log(new Date(), `Registro guardado | Backup: ${res.data.name}`))
+        .catch(err => console.error(new Date(), err.message))
     }, 10000)
 });
 
